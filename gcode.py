@@ -11,10 +11,11 @@ class Gcode:
     size = 0 # number of lines
 
     def parse_test(self):
-        lines = (
+        self.lines = [
             'G01 X0.0 Y0.0',
-            'G01, X100.0 Y100.0',
-            'G01, X200.0 Y0.0')
+            'G01 X100.0 Y100.0',
+            'G01 X200.0 Y0.0']
+        self.size = len(self.lines)
 
     # checks if the gcodes fit into the canvas
     def trim(self):
@@ -25,16 +26,17 @@ class Gcode:
         file = open(file, 'r')
         self.lines = file.readlines()
         file.close()
+        self.size = len(self.lines)
 
     def decode(self, cmd):
         if cmd[0] == 'X':
-            return ('X', float(cmd.split('X')[1]))
+            return ('x', float(cmd.split('X')[1]))
         if cmd[0] == 'Y':
-            return ('Y', float(cmd.split('Y')[1]))
+            return ('y', float(cmd.split('Y')[1]))
         if cmd == cm.CODE_DOWN:
-            return ('PEN', 'DOWN')
+            return ('pen_down', True)
         if cmd == cm.CODE_UP:
-            return ('PEN', 'UP')
+            return ('pen_down', False)
         return ('ERROR', None)        
 
     # gets the next gcode command
@@ -56,22 +58,14 @@ class Gcode:
                 decoded = self.decode(cmd)
                 cmd_type = decoded[0]
                 cmd_value = decoded[1]
-                if cmd_type == 'X':
+                if cmd_type == 'x':
                     x = cmd_value
-                elif cmd_type == 'Y':
+                elif cmd_type == 'y':
                     y = cmd_value
-                elif cmd_type == 'PEN':
-                    if cmd_value == 'UP':
-                        pen_down = False
-                    if cmd_value == 'DOWN':
-                        pen_down = True
+                elif cmd_type == 'pen_down':
+                    pen_down = cmd_value
             
-            if x is not None and y is not None:
-                print('tbd')
-
-
-
-        return (type, value)
+        return (pen_down, x, y)
 
 
 # ---------------------------------------------------------
@@ -84,11 +78,19 @@ class Test(unittest.TestCase):
     
     def test_decode(self):
         gc = Gcode()
-        self.assertEqual(gc.decode('G0'), ('PEN', 'UP'))
-        self.assertEqual(gc.decode('G1'), ('PEN', 'DOWN'))    
-        self.assertEqual(gc.decode('X-100.0'), ('X', -100.0))    
-        self.assertEqual(gc.decode('Y22'), ('Y', 22.0))    
-        self.assertEqual(gc.decode('G2'), ('ERROR', None))    
+        self.assertEqual(gc.decode('G00'), ('pen_down', False))
+        self.assertEqual(gc.decode('G01'), ('pen_down', True))    
+        self.assertEqual(gc.decode('X-100.0'), ('x', -100.0))    
+        self.assertEqual(gc.decode('Y22'), ('y', 22.0))    
+        self.assertEqual(gc.decode('G2'), ('ERROR', None))   
+
+    def test_get_next(self):
+        gc = Gcode()
+        gc.parse_test()
+        self.assertEqual(gc.get_next(), (True, 0.0, 0.0))
+        self.assertEqual(gc.get_next(), (True, 100.0, 100.0))
+        self.assertEqual(gc.get_next(), (True, 200.0, 0.0))
+
 
 
 if __name__ == '__main__':

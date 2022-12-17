@@ -6,8 +6,8 @@ class Commons:
 
     PERIOD = 20 # servo positions are set all 20 ms (50 Hz)
 
-    CODE_UP = 'G0'
-    CODE_DOWN = 'G1'
+    CODE_UP = 'G00'
+    CODE_DOWN = 'G01'
 
     X_MIN_PULSE = 1000
     X_MAX_PULSE = 2000
