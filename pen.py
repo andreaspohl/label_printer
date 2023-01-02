@@ -9,6 +9,8 @@ import plot as pl
 
 class Pen:
 
+    debug = False
+
     number_of_steps = None
 
     pos = np.array([0., 0.]) # actual x,y position of pen
@@ -55,8 +57,9 @@ class Pen:
         self.servo_x.move()
         self.servo_y.move()
 
-        if True: # only for testing purposes
-            pl.plot(pos[0], pos[1])
+        if self.debug: # only for testing purposes
+            print('move_servos', pos[0], pos[1])
+            self.pl.point(pos[0], pos[1])
 
     # move pen up or down
     def move_pen_down(self, down):
@@ -64,7 +67,8 @@ class Pen:
             self.servo_z.set(0)
         else:
             self.servo_z.set(1000)
-        sleep(0.5)
+        if self.debug: print('up/down')
+        sleep(cm.UP_DOWN_DURATION / 1000)
 
     # move the pen to the target
     def move(self):

@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
         pen = Pen()
         pen.preset(np.array([0,500]))
         print(f'get_step: {pen.get_step()} ')
-        self.assertTrue(np.array_equal(pen.get_step(), np.array([0,500/51])))
+        self.assertTrue(np.array_equal(pen.get_step(), np.array([0, 500/51])))
 
     def test_number_of_steps(self):
         pen = Pen()

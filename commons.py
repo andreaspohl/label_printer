@@ -18,5 +18,7 @@ class Commons:
     PEN_MIN_PULSE = 1000
     PEN_MAX_PULSE = 2000
 
+    UP_DOWN_DURATION = 500 # time to move the pen up/down [ms]
+
 
 

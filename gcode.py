@@ -21,10 +21,10 @@ class Gcode:
 
     def parse_test2(self):
         self.lines = [
-            'G1 X-0.10 Y0.00',
-            'G1 X99.90 Y100.00',
+            'G1 X-0.10 Y-0.20',
+            'G1 X99.90 Y99.80',
             '',
-            'G1 X199.90 Y0.00']
+            'G1 X199.90 Y-0.20']
         self.size = len(self.lines)
 
     # checks if the gcodes fit into the canvas
@@ -45,7 +45,7 @@ class Gcode:
             if pos is not None:
                 self.cmds.append(pos)
 
-    # normalizes all x,y commands to fit the whole command list exactly into 0..1000
+    # normalizes all x,y commands to fit the whole command list exactly into 0..1000 height
     def normalize(self):
         x_min = None
         x_max = None
@@ -64,13 +64,11 @@ class Gcode:
                 y_min = min(y_min, cmd.y)
                 y_max = max(y_max, cmd.y)
         
-        delta_x = (x_max - x_min) / 1000
         delta_y = (y_max - y_min) / 1000
 
         for cmd in self.cmds:
-            cmd.x = (cmd.x - x_min) / delta_x
+            cmd.x = (cmd.x - x_min) / delta_y
             cmd.y = (cmd.y - y_min) / delta_y
-        print('wait')
 
     # decodes a line in the nc file and returns a position (machine command)
     # G1 X4.64 Y6.04 --> pen is down, x=4.64, y=6.04

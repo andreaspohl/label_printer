@@ -37,9 +37,9 @@ class Test(unittest.TestCase):
             if i == 0:
                 self.assertEqual(gc.cmds[0], gp(True, 0.0, 0.0))
             elif i == 1:
-                self.assertEqual(gc.cmds[1], gp(True, 500.0, 1000.0))
+                self.assertEqual(gc.cmds[1], gp(True, 1000.0, 1000.0))
             elif i == 2:
-                self.assertEqual(gc.cmds[2], gp(True, 1000.0, 0.0))
+                self.assertEqual(gc.cmds[2], gp(True, 2000.0, 0.0))
     
     def test_print(self):
         gc = Gcode()
