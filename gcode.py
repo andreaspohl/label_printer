@@ -10,7 +10,7 @@ class Gcode:
     lines = None # the content of the gcode file
     bookmark = 0 # line to read next
     size = 0 # number of lines
-    cmds = None # the (eventually normalized) machine commands
+    cmds = list(()) # the (eventually normalized) list of machine commands aka positions
 
     def parse_test(self):
         self.lines = [
@@ -29,22 +29,37 @@ class Gcode:
             self.lines = file.readlines()
         self.size = len(self.lines)
 
+    def create_cmd_list(self):
+        for line in self.lines:
+            pos = self.decode(line)
+            if pos is not None:
+                self.cmds.append(pos)
 
     # calculates factor to fit height into 0..1000
     def normalize(self):
         print('tbd')
 
-    def decode(self, sub_cmd, pos):
-        if sub_cmd[0] == 'X':
-            pos.x = float(sub_cmd.split('X')[1])
-        elif sub_cmd[0] == 'Y':
-            pos.y = float(sub_cmd.split('Y')[1])
-        elif sub_cmd == cm.CODE_DOWN:
-            pos.pen_down = True
-        elif sub_cmd == cm.CODE_UP:
-            pos.pen_down = False
-        else:
-            pos.valid = False
+    # decodes a line in the nc file and returns a position (machine command)
+    # G1 X4.64 Y6.04 --> pen is down, x=4.64, y=6.04
+    # if the line cannot be decoded, None is returned
+    def decode(self, cmd: str):
+        pos = None
+        if (len(cmd) > 0 and not cmd.isspace()):
+            pos = gp()
+            sub_cmds = cmd.split(' ')
+            for sub_cmd in sub_cmds:
+                if sub_cmd[0] == 'X':
+                    pos.x = float(sub_cmd.split('X')[1])
+                elif sub_cmd[0] == 'Y':
+                    pos.y = float(sub_cmd.split('Y')[1])
+                elif sub_cmd == cm.CODE_DOWN:
+                    pos.pen_down = True
+                elif sub_cmd == cm.CODE_UP:
+                    pos.pen_down = False
+                else:
+                    # invalid/unknown gcode
+                    pos = None
+                    break
         return pos
 
     # resets to first line in gcode
@@ -53,11 +68,12 @@ class Gcode:
     
     # gets the next gcode command
     # returns the next machine position
+    # deprecated
     def get_next(self):
         pos = gp()
 
         if self.bookmark == self.size:
-            pos.end = True
+            pos = None
         else:
             command = self.lines[self.bookmark]
             self.bookmark += 1
@@ -79,22 +95,24 @@ class Test(unittest.TestCase):
     def test_decode(self):
         gc = Gcode()
         pos = gp()
-        self.assertEqual(gc.decode('G0', pos), gp(None, None, False, False))
-        self.assertEqual(gc.decode('G1', pos), gp(None, None, True, False))    
-        self.assertEqual(gc.decode('X-100.0', pos), gp(-100.0, None, True, False))    
-        self.assertEqual(gc.decode('Y22', pos), gp(-100.0, 22.0, True, False)) 
+        self.assertEqual(gc.decode('G0 X7.64 Y3.10'), gp(False, 7.64, 3.10))
+        self.assertEqual(gc.decode('G1 X17.95 Y-0.01'), gp(True, 17.95, -0.01))    
+        self.assertEqual(gc.decode('G2'), None)   
+        self.assertEqual(gc.decode(''), None)
 
-        invalid_pos = gp(-100.0, 22.0, True, False)
-        invalid_pos.valid = False
-        self.assertEqual(gc.decode('G2', pos), invalid_pos)   
-
-    def test_get_next(self):
+    def test_cmds(self):
         gc = Gcode()
         gc.parse_test()
-        self.assertEqual(gc.get_next(), gp(0.0, 0.0, True, False))
-        self.assertEqual(gc.get_next(), gp(100.0, 100.0, True, False))
-        self.assertEqual(gc.get_next(), gp(200.0, 0.0, True, False))
-        self.assertEqual(gc.get_next(), gp(None, None, False, True))
+        for i in range(len(gc.cmds)):
+            if i == 0:
+                self.assertEqual(gc.get_next(), gp(True, 0.0, 0.0))
+            elif i == 1:
+                self.assertEqual(gc.get_next(), gp(True, 100.0, 100.0))
+            elif i == 2:
+                self.assertEqual(gc.get_next(), gp(True, 200.0, 0.0))
+
+        gc.create_cmd_list()
+        print('test to be defined')
 
 
 
