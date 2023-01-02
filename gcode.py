@@ -42,7 +42,8 @@ class Gcode:
 
     # decodes a line in the nc file and returns a position (machine command)
     # G1 X4.64 Y6.04 --> pen is down, x=4.64, y=6.04
-    # if the line cannot be decoded, None is returned
+    # if the line is empty, None is returned
+    # if the line cannot be decoded, an error is thrown
     def decode(self, cmd: str):
         pos = None
         if (len(cmd) > 0 and not cmd.isspace()):
@@ -59,7 +60,7 @@ class Gcode:
                     pos.pen_down = False
                 else:
                     # invalid/unknown gcode
-                    pos = None
+                    raise Exception('Unknown gcode: ' + cmd)
                     break
         return pos
 
@@ -98,8 +99,8 @@ class Test(unittest.TestCase):
         pos = gp()
         self.assertEqual(gc.decode('G0 X7.64 Y3.10'), gp(False, 7.64, 3.10))
         self.assertEqual(gc.decode('G1 X17.95 Y-0.01'), gp(True, 17.95, -0.01))    
-        self.assertEqual(gc.decode('G2'), None)   
         self.assertEqual(gc.decode(''), None)
+        self.assertRaisesRegex(Exception, 'Unknown gcode: G2', gc.decode, 'G2')   
 
     def test_cmds(self):
         gc = Gcode()
