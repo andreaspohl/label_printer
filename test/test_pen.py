@@ -49,5 +49,11 @@ class Test(unittest.TestCase):
         pen.preset(np.array([1,1]))
         pen.move()
 
-if __name__ == '__main__':
-    unittest.main(verbosity=2)    
+    def test_cmd(self):
+        pen = Pen()
+        self.assertEqual(pen.pos[0], 0.0)
+        self.assertEqual(pen.pos[1], 0.0)
+        
+        pen.cmd(gp(True, 55, 66))
+        self.assertEqual(pen.pos[0], 55.0)
+        self.assertEqual(pen.pos[1], 66.0)

@@ -2,7 +2,7 @@
 
 import numpy as np
 from commons import Commons as cm
-from gcode_pos import Gcode_pos as gp
+from command import Command as gp
 
 
 class Gcode:

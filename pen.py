@@ -1,9 +1,11 @@
 # this class is for positioning the pen on the tape
 from servo import Servo
+from command import Command as gp
 import numpy as np
 from commons import Commons as cm
 from numpy import linalg as la
 from time import sleep
+import plot as pl
 
 class Pen:
 
@@ -13,10 +15,13 @@ class Pen:
     down = False
     servo_x = Servo('x')
     servo_y = Servo('y')
+    servo_z = Servo('z')
 
     new_pos = None # target x,y position of pen
     v = 0 # speed vector to get in n steps to the new_pos, depending on self.SPEED
     n = 0
+
+    pl = pl.Plot()
 
     # sets a new target position
     # caculates movement variables
@@ -49,7 +54,17 @@ class Pen:
         self.servo_y.set(pos[1])
         self.servo_x.move()
         self.servo_y.move()
-        # print(f'move servos to {pos}')
+
+        if True: # only for testing purposes
+            pl.plot(pos[0], pos[1])
+
+    # move pen up or down
+    def move_pen_down(self, down):
+        if down:
+            self.servo_z.set(0)
+        else:
+            self.servo_z.set(1000)
+        sleep(0.5)
 
     # move the pen to the target
     def move(self):
@@ -62,7 +77,16 @@ class Pen:
                 self.move_servos(self.pos)
             else:
                 # move to final position
+                self.pos = self.new_pos
                 self.move_servos(self.new_pos)
 
             # wait period
             sleep(cm.PERIOD / 1000)
+
+    # move pen according to this gcode command (x,y must be in 0..1000)
+    def cmd(self, cmd: gp):
+        if self.down != cmd.pen_down:
+            self.move_pen_down(cmd.pen_down)
+            self.down = cmd.pen_down
+        self.preset(np.array([cmd.x, cmd.y]))
+        self.move()

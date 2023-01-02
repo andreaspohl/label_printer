@@ -1,5 +1,8 @@
-# a position or command in gcode
-class Gcode_pos:
+# a command in gcode
+
+import copy
+
+class Command:
 
     def __init__(self, pen_down = False, x = None, y = None) -> None:
         self.pen_down = pen_down
@@ -13,3 +16,9 @@ class Gcode_pos:
     
     def __ne__(self, pos) -> bool:
         return not self == pos
+
+    def __sub__(self, pos):
+        result = copy.deepcopy(self)
+        result.x = self.x - pos.x
+        result.y = self.y - pos.y
+        return result
