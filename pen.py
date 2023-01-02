@@ -17,7 +17,7 @@ class Pen:
     down = False
     servo_x = Servo('x')
     servo_y = Servo('y')
-    servo_z = Servo('z')
+    servo_z = Servo('pen')
 
     new_pos = None # target x,y position of pen
     v = 0 # speed vector to get in n steps to the new_pos, depending on self.SPEED
@@ -52,10 +52,8 @@ class Pen:
     
     # move the servos
     def move_servos(self, pos):
-        self.servo_x.set(pos[0])
-        self.servo_y.set(pos[1])
-        self.servo_x.move()
-        self.servo_y.move()
+        self.servo_x.move(pos[0])
+        self.servo_y.move(pos[1])
 
         if self.debug: # only for testing purposes
             print('move_servos', pos[0], pos[1])

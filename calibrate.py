@@ -1,7 +1,9 @@
 # calibrate a servo
 
 from servo import Servo
-import sys,tty
+from commons import Commons
+import sys, tty
+from time import sleep
 
 def clip(servo, pos):
     return sorted([servo.min, pos, servo.max])[1]
@@ -44,7 +46,8 @@ while go_on:  # making a loop
     elif key == 'q':
         go_on = False
     pos = clip(servo, pos)
-    servo.pos = pos
     servo.set(pos)
-    servo.move()
+    for i in range(0, 10):
+        servo.move()
+        sleep(Commons.PERIOD / 1000)
     print(pos)

@@ -40,8 +40,8 @@ class TestServo(unittest.TestCase):
         s.min_pulse = 0
         s.max_pulse = 100
         s.set(500)
-        self.assertEqual(s.calc_pwm(), 50)
-        self.assertEqual(s.calc_pwm(700), 70)
+        self.assertEqual(s.calc_pulse(), 50)
+        self.assertEqual(s.calc_pulse(700), 70)
 
     def test_move(self):
         s = Servo()

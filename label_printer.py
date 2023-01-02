@@ -3,11 +3,12 @@ import pen
 
 gc = gc.Gcode()
 pen = pen.Pen()
+pen.debug = True
 
 gc.parse('./data/short.nc')
 
 for cmd in gc.cmds:
-    print(cmd.x, cmd.y)
+    print('GCODE:     ', cmd.x, cmd.y)
     pen.cmd(cmd)
 
 pen.pl.show()

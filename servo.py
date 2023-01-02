@@ -29,28 +29,28 @@ class Servo:
         print('max: ', self.max)
         print('pos: ', self.pos)
 
-    def inc(self, value = 1):
-        self.pos += value
-        self.pos = self.clip(self.pos)
-    
     def set(self, value = -1):
         if value != -1:
             self.pos = self.clip(value)
 
-    def move(self):
+    def move(self, pos = None):
+        if pos is not None:
+            self.pos = self.clip(pos)
         self.pos = self.clip(self.pos)
+        pulse = self.calc_pulse(self.pos)
         # TODO: write to servo
         # print(f'servo: {self.axes} pos: {self.pos} pwm: {self.calc_pwm()}')
     
-    def calc_pwm(self, pos = None):
+    def calc_pulse(self, pos = None):
         if pos == None:
             pos = self.pos 
-        pwm = pos * (self.max_pulse - self.min_pulse) / 1000 + self.min_pulse
-        return pwm
+        pulse = pos * (self.max_pulse - self.min_pulse) / 1000 + self.min_pulse
+        return pulse
+    
+    def inc(self, value = 1):
+        self.pos += value
+        self.pos = self.clip(self.pos)
     
     def decr(self, value = 1):
         self.pos -= value
         self.pos = self.clip(self.pos)
-    
-    def set_lower_range_limit(self):
-        self.min_pulse = self.calc_pwm()
