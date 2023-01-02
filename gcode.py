@@ -16,6 +16,7 @@ class Gcode:
         self.lines = [
             'G1 X0.00 Y0.00',
             'G1 X100.00 Y100.00',
+            '',
             'G1 X200.00 Y0.00']
         self.size = len(self.lines)
 
@@ -79,7 +80,7 @@ class Gcode:
             self.bookmark += 1
             sub_cmds = command.split(' ')
             for sub_cmd in sub_cmds:
-                decoded = self.decode(sub_cmd, pos)
+                decoded = self.decode(sub_cmd)
             
         return (pos)
 
@@ -103,19 +104,16 @@ class Test(unittest.TestCase):
     def test_cmds(self):
         gc = Gcode()
         gc.parse_test()
+        self.assertEqual(len(gc.lines), 4)
+        gc.create_cmd_list()
+        self.assertEqual(len(gc.cmds), 3)
         for i in range(len(gc.cmds)):
             if i == 0:
-                self.assertEqual(gc.get_next(), gp(True, 0.0, 0.0))
+                self.assertEqual(gc.cmds[0], gp(True, 0.0, 0.0))
             elif i == 1:
-                self.assertEqual(gc.get_next(), gp(True, 100.0, 100.0))
+                self.assertEqual(gc.cmds[1], gp(True, 100.0, 100.0))
             elif i == 2:
-                self.assertEqual(gc.get_next(), gp(True, 200.0, 0.0))
-
-        gc.create_cmd_list()
-        print('test to be defined')
-
-
-
+                self.assertEqual(gc.cmds[2], gp(True, 200.0, 0.0))
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)    
