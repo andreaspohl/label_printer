@@ -5,6 +5,12 @@ from commons import Commons
 import sys, tty
 from time import sleep
 
+
+embedded = False
+
+if embedded:
+    import PCA9685 as pca
+
 def clip(servo, pos):
     return sorted([servo.min, pos, servo.max])[1]
 
@@ -24,6 +30,12 @@ servo.min_pulse = 0
 servo.max_pulse = 3000
 servo.pos = 1500
 pos = 1500
+
+hat = None
+if embedded:
+    hat = pca.PCA9685(0x40, debug=False)
+    hat.setPWMFreq(50)
+
 
 go_on = True
 
