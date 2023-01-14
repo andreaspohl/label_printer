@@ -6,9 +6,7 @@ import sys, tty
 from time import sleep
 
 
-embedded = False
-
-if embedded:
+if Commons.EMBEDDED:
     import PCA9685 as pca
 
 def clip(servo, pos):
@@ -32,10 +30,9 @@ servo.pos = 1500
 pos = 1500
 
 hat = None
-if embedded:
+if Commons.EMBEDDED:
     hat = pca.PCA9685(0x40, debug=False)
     hat.setPWMFreq(50)
-
 
 go_on = True
 
@@ -59,7 +56,5 @@ while go_on:  # making a loop
         go_on = False
     pos = clip(servo, pos)
     servo.set(pos)
-    for i in range(0, 10):
-        servo.move()
-        sleep(Commons.PERIOD / 1000)
+    servo.move()
     print(pos)

@@ -1,4 +1,6 @@
-import matplotlib.pyplot as plt
+from commons import Commons
+if not Commons.EMBEDDED:
+    import matplotlib.pyplot as plt
 
 class Plot:
 
@@ -11,5 +13,6 @@ class Plot:
         
     
     def show(self):
-        plt.plot(self.x, self.y)
-        plt.show()
+        if not Commons.EMBEDDED:
+            plt.plot(self.x, self.y)
+            plt.show()
