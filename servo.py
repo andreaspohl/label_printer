@@ -38,6 +38,9 @@ class Servo:
     def clip(self, pos):
         return sorted([self.min, pos, self.max])[1]
 
+    def clip_pulse(self, pulse):
+        return sorted([self.min_pulse, pulse, self.max_pulse])[1]
+
     def info(self):
         print('min: ', self.min)
         print('max: ', self.max)
@@ -48,6 +51,11 @@ class Servo:
         if value != -1:
             self.pos = self.clip(value)
 
+    # set server pwm pulse (only for calibration)
+    def set_pwm(self, pulse):
+        self.hat.setServoPulse(self.channel, pulse)
+        print(f'pulse: {pulse}')
+
     # move servo to previously set position (or to given position)
     def move(self, pos = None):
         if pos is not None:
@@ -55,6 +63,7 @@ class Servo:
         self.pos = self.clip(self.pos)
         pulse = self.calc_pulse(self.pos)
         self.hat.setServoPulse(self.channel, pulse)
+        print(f'pulse: {pulse}')
     
     # calculate pwm pulse length
     def calc_pulse(self, pos = None):

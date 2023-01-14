@@ -10,39 +10,50 @@ if Commons.EMBEDDED:
     import PCA9685 as pca
 
 def clip(servo, pos):
-    return sorted([servo.min, pos, servo.max])[1]
+    return servo.clip_pulse(pos)
 
+# deactive normalization
+def de_norm(servo):
+    servo.min = 0
+    servo.max = 3000
+    servo.min_pulse = 0
+    servo.max_pulse = 3000
+    servo.pos = 1500
+    return 1500
 
 axes = None
 while axes not in ('x', 'y', 'pen'):
     axes = input('Enter servo axes to calibrate (x, y, pen):')
 
-print('A/a decrease by 10/1, D/d increase by 10/1, s set to 1000 ns, S set to 2000ns, q quit')
-
 servo = Servo(axes)
 
-# deactive normalization
-servo.min = 0
-servo.max = 3000
-servo.min_pulse = 0
-servo.max_pulse = 3000
-servo.pos = 1500
-pos = 1500
+pos = 500
 
 hat = None
 if Commons.EMBEDDED:
     hat = pca.PCA9685(0x40, debug=False)
     hat.setPWMFreq(50)
 
+print('POSITION')
+print('A/a: decrease by 10/1')
+print('D/d: increase by 10/1')
+print('-+: set to min/max position')
+print()
+print('PULSE')
+print('n: deactivate normalization')
+print('s: set to 1000 ns, S set to 2000ns')
+print('q: quit')
+
 go_on = True
+normalized = True
 
 while go_on:  # making a loop
 
     tty.setcbreak(sys.stdin)  
     key = sys.stdin.read(1)  # key captures the key-code 
-    if key == 's':
+    if key == 's' and not normalized:
         pos = 1000
-    if key == 'S':
+    if key == 'S' and not normalized:
         pos = 2000
     elif key == 'A':
         pos = pos - 10
@@ -52,9 +63,21 @@ while go_on:  # making a loop
         pos = pos + 1
     elif key == 'D':
         pos = pos + 10
+    elif key == 'n':
+        normalized = False
+        pos = de_norm(servo)
+    elif key == '+' and normalized:
+        pos = servo.max
+    elif key == '-' and normalized:
+        pos = servo.min
     elif key == 'q':
         go_on = False
-    pos = clip(servo, pos)
-    servo.set(pos)
-    servo.move()
-    print(pos)
+
+    if normalized:
+        pos = servo.clip(pos)
+        servo.move(pos)
+        print(f'pos = {pos}')
+    else:
+        pos = servo.clip_pulse(pos)
+        servo.set_pwm(pos)
+        print(f'pulse = {pos}')
