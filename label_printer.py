@@ -1,14 +1,18 @@
 import gcode as gc
 import pen
 
-gc = gc.Gcode()
-pen = pen.Pen()
-pen.debug = True
+class Label_printer:
 
-gc.parse('./data/short.nc')
+    def __init__(self) -> None:
+        self.gc = gc.Gcode()
+        self.pen = pen.Pen()
+        self.pen.debug = False
 
-for cmd in gc.cmds:
-    print('GCODE:     ', cmd.x, cmd.y)
-    pen.cmd(cmd)
+    def plot_label(self, file):
+        self.gc.parse(file)
 
-pen.pl.show()
+        for cmd in self.gc.cmds:
+            print('CMD:     ', cmd.x, cmd.y)
+            self.pen.cmd(cmd)
+
+        self.pen.pl.show()

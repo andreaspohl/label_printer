@@ -11,6 +11,7 @@ class Commons:
     CODE_UP = 'G0'
     CODE_DOWN = 'G1'
 
+    X_MAX = 5333
     X_MIN_PULSE = 240
     X_MAX_PULSE = 2330
 

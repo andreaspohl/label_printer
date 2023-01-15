@@ -5,9 +5,9 @@ if cm.EMBEDDED:
 
 class Servo:
     axes = None
-    min = 0 # value for left/lower limit
-    max = 1000 # value for right/upper limit
-    pos = 500 # actual position, also position at power up
+    min = 0 # value for lower limit
+    max = 1000 # value for upper limit (for y axes)
+    pos = 0 # actual position, also position at power up
 
     hat = None
 
@@ -20,6 +20,7 @@ class Servo:
             self.min_pulse = cm.X_MIN_PULSE
             self.max_pulse = cm.X_MAX_PULSE
             self.channel = cm.X_SERVO_CHANNEL
+            self.max = cm.X_MAX
         if axes == 'y':
             self.min_pulse = cm.Y_MIN_PULSE
             self.max_pulse = cm.Y_MAX_PULSE
@@ -54,7 +55,7 @@ class Servo:
     # set server pwm pulse (only for calibration)
     def set_pwm(self, pulse):
         self.hat.setServoPulse(self.channel, pulse)
-        print(f'pulse: {pulse}')
+        # print(f'pulse: {pulse}')
 
     # move servo to previously set position (or to given position)
     def move(self, pos = None):
@@ -63,13 +64,13 @@ class Servo:
         self.pos = self.clip(self.pos)
         pulse = self.calc_pulse(self.pos)
         self.hat.setServoPulse(self.channel, pulse)
-        print(f'pulse: {pulse}')
+        # print(f'pulse: {pulse}')
     
     # calculate pwm pulse length
     def calc_pulse(self, pos = None):
         if pos == None:
             pos = self.pos 
-        pulse = pos * (self.max_pulse - self.min_pulse) / 1000 + self.min_pulse
+        pulse = pos * (self.max_pulse - self.min_pulse) / (self.max - self.min) + self.min_pulse
         return pulse
     
     def inc(self, value = 1):

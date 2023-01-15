@@ -62,11 +62,14 @@ class Pen:
     # move pen up or down
     def move_pen_down(self, down):
         if down:
-            self.servo_z.set(0)
-        else:
             self.servo_z.set(1000)
-        if self.debug: print('up/down')
-        sleep(cm.UP_DOWN_DURATION / 1000)
+        else:
+            self.servo_z.set(0)
+        if self.debug:
+            print('up/down')
+        else:
+            self.servo_z.move()
+            sleep(cm.UP_DOWN_DURATION / 1000)
 
     # move the pen to the target
     def move(self):
