@@ -25,7 +25,7 @@ def convert(text):
         f.write(text)
         f.close()
         subprocess.run(['./text_to_gcode.py', '--input', '../data/' + txt_file, '--output', '../data/' + nc_file, '--line-length', '3000', '--line-spacing', '10', '--padding', '0.5'], cwd=home_dir + 'text-to-gcode/')
-        label_printer.plot_label(home_dir + 'data/' + tst_file)
+        label_printer.plot_label(home_dir + 'data/' + nc_file)
 
 
 if __name__ == '__main__':

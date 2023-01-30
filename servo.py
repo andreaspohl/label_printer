@@ -55,13 +55,15 @@ class Servo:
     # set server pwm pulse (only for calibration)
     def set_pwm(self, pulse):
         self.hat.setServoPulse(self.channel, pulse)
-        # print(f'pulse: {pulse}')
+            # print(f'pulse: {pulse}')
 
     # move servo to previously set position (or to given position)
     def move(self, pos = None):
         if pos is not None:
             self.pos = self.clip(pos)
         self.pos = self.clip(self.pos)
+        if not cm.PEN_ARMED and self.axes == 'pen':
+            self.pos = self.max
         pulse = self.calc_pulse(self.pos)
         self.hat.setServoPulse(self.channel, pulse)
         # print(f'pulse: {pulse}')

@@ -3,6 +3,7 @@
 class Commons:
 
     EMBEDDED = True # set to true if run on RPI
+    PEN_ARMED = False # set to False if pen must stay up all the time
 
     SPEED = 500 # pen speed is 500 dots per second, i.e. half the height of the canvas
 
