@@ -28,5 +28,11 @@ class Commons:
 
     UP_DOWN_DURATION = 500 # time to move the pen up/down [ms]
 
+    # 50 dots top/bottom margin, 6.15 is single row max, -1.76 is single row min
+    LINE_SPACING = 8.0
+    SCALING_HANGING_SIZE = 1.76
+    SCALING_FACTOR = 1 / (6.15 + LINE_SPACING + 1.76) * (1000 - 100) # factor to fit 2 lines
+    SCALING_OFFSET = 50 # bottom margin
+
 
 
