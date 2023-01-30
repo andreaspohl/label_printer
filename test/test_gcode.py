@@ -41,11 +41,25 @@ class Test(unittest.TestCase):
             elif i == 2:
                 self.assertEqual(gc.cmds[2], gp(True, 2000.0, 0.0))
     
+    def test_standardize(self):
+        gc = Gcode()
+        gc.parse_test3()
+        gc.create_cmd_list()
+        gc.standardize()
+        for i in range(len(gc.cmds)):
+            cmd = gc.cmds[i]
+            if i == 0:
+                self.assertAlmostEqual(cmd.y, 50.0)
+            elif i == 1:
+                self.assertAlmostEqual(cmd.y, 950.0)
+            elif i == 2:
+                self.assertAlmostEqual(cmd.y, 50.0)
+    
     def test_print(self):
         gc = Gcode()
         gc.parse_test2()
         gc.create_cmd_list()
-        gc.normalize()
+        gc.standardize()
 
         print('Lines:')
         for line in gc.lines:

@@ -26,6 +26,15 @@ class Gcode:
             '',
             'G1 X199.90 Y-0.20']
         self.size = len(self.lines)
+    
+    # two liner extreme points
+    def parse_test3(self):
+        self.lines = [
+            'G1 X0.0 Y-9.76',
+            'G1 X6.15 Y6.15',
+            '',
+            'G1 X6.15 Y-9.76']
+        self.size = len(self.lines)
 
     # checks if the gcodes fit into the canvas
     def trim(self):
@@ -37,7 +46,7 @@ class Gcode:
             self.lines = file.readlines()
         self.size = len(self.lines)
         self.create_cmd_list()
-        self.normalize()
+        self.standardize()
 
     def create_cmd_list(self):
         for line in self.lines:
@@ -45,7 +54,38 @@ class Gcode:
             if pos is not None:
                 self.cmds.append(pos)
 
-    # normalizes all x,y commands to fit the whole command list exactly into 0..1000 height
+    # normalizes the text to a standard height, and centers it
+    def standardize(self):
+
+        x_min = None
+        x_max = None
+        y_min = None
+        y_max = None
+
+        for cmd in self.cmds:
+            if x_min is None:
+                x_min = cmd.x
+                x_max = cmd.x
+                y_min = cmd.y
+                y_max = cmd.y
+            else:
+                x_min = min(x_min, cmd.x)
+                x_max = max(x_max, cmd.x)
+                y_min = min(y_min, cmd.y)
+                y_max = max(y_max, cmd.y)
+        
+        linebreaks = 0
+        if y_min < - cm.SCALING_HANGING_SIZE:
+            linebreaks = 1 # three liners will fail to print
+
+        for cmd in self.cmds:
+            cmd.x = (cmd.x - x_min) * cm.SCALING_FACTOR
+            cmd.y = (cmd.y + linebreaks * cm.LINE_SPACING + cm.SCALING_HANGING_SIZE) * cm.SCALING_FACTOR + cm.SCALING_OFFSET
+        
+
+
+
+    # DEPRECATED. normalizes all x,y commands to fit the whole command list exactly into 0..1000 height
     def normalize(self):
         x_min = None
         x_max = None

@@ -17,7 +17,7 @@ def convert(text):
     with open('/home/pi/label_printer/data/in.txt', 'w', encoding='utf-8') as f:
         f.write(text)
         f.close()
-        subprocess.run(['./text_to_gcode.py', '--input', '../data/in.txt', '--output', '../data/out.nc', '--line-length', '3000', '--line-spacing', '10', '--padding', '0.5'], cwd='/home/pi/label_printer/text-to-gcode/')
+        subprocess.run(['./text_to_gcode.py', '--input', '../data/in.txt', '--output', '../data/out.nc', '--line-length', '75', '--line-spacing', '8', '--padding', '0.5'], cwd='/home/pi/label_printer/text-to-gcode/')
 
 if __name__ == '__main__':
     convert("blabla")
