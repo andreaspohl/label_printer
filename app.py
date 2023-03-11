@@ -24,8 +24,14 @@ def convert(text):
     with open(home_dir +  'data/' + txt_file, 'w', encoding='utf-8') as f:
         f.write(text)
         f.close()
-        subprocess.run(['./text_to_gcode.py', '--input', '../data/' + txt_file, '--output', '../data/' + nc_file, '--line-length', '75', '--line-spacing', '8', '--padding', '0.5'], cwd=home_dir + 'text-to-gcode/')
-        label_printer.plot_label(home_dir + 'data/' + nc_file)
+    
+    subprocess.run(['./text_to_gcode.py', '--input', '../data/' + txt_file, '--output', '../data/' + nc_file, '--line-length', '75', '--line-spacing', '8', '--padding', '0.5'], cwd=home_dir + 'text-to-gcode/')
+
+    with open(home_dir + 'data/' + nc_file, 'a') as f:
+        f.write('\nG0 X0.0 Y0.0')
+        f.close()
+
+    label_printer.plot_label(home_dir + 'data/' + nc_file)
 
 if __name__ == '__main__':
     convert("Schach matt!")

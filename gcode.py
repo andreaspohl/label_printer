@@ -74,13 +74,13 @@ class Gcode:
                 y_min = min(y_min, cmd.y)
                 y_max = max(y_max, cmd.y)
         
-        linebreaks = 0
+        lines = 1
         if y_min < - cm.SCALING_HANGING_SIZE:
-            linebreaks = 1 # three liners will fail to print
+            lines = 2 # three liners will fail to print
 
         for cmd in self.cmds:
             cmd.x = (cmd.x - x_min) * cm.SCALING_FACTOR
-            cmd.y = (cmd.y + linebreaks * cm.LINE_SPACING + cm.SCALING_HANGING_SIZE) * cm.SCALING_FACTOR + cm.SCALING_OFFSET
+            cmd.y = (cmd.y + lines * 0.5 * cm.LINE_SPACING + cm.SCALING_HANGING_SIZE) * cm.SCALING_FACTOR + cm.SCALING_OFFSET
         
 
 
