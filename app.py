@@ -25,7 +25,7 @@ def convert(text):
         f.write(text)
         f.close()
     
-    subprocess.run(['./text_to_gcode.py', '--input', '../data/' + txt_file, '--output', '../data/' + nc_file, '--line-length', '75', '--line-spacing', '8', '--padding', '0.5'], cwd=home_dir + 'text-to-gcode/')
+    subprocess.run(['./text_to_gcode.py', '--input', '../data/' + txt_file, '--output', '../data/' + nc_file, '--line-length', '75', '--line-spacing', '8', '--padding', '1.5'], cwd=home_dir + 'text-to-gcode/')
 
     with open(home_dir + 'data/' + nc_file, 'a') as f:
         f.write('\nG0 X0.0 Y0.0')
@@ -34,4 +34,4 @@ def convert(text):
     label_printer.plot_label(home_dir + 'data/' + nc_file)
 
 if __name__ == '__main__':
-    convert("Schach matt!")
+    convert("Katharina")
