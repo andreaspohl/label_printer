@@ -1,0 +1,16 @@
+h1 {
+    border: 2px steelblue solid;
+    color: steelblue;
+    background-color: lightsteelblue;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    padding: 10px;
+}
+
+form {
+    border: 2px steelblue solid;
+    color: steelblue;
+    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 10px;
+}

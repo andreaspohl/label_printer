@@ -42,6 +42,7 @@ class Gcode:
 
     def parse(self, file):
         print('parse file')
+        self.cmds = list(()) # purge old cmds
         with open(file, 'r') as file:
             self.lines = file.readlines()
         self.size = len(self.lines)

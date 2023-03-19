@@ -14,13 +14,18 @@ tst_file = 'test_data.nc'
 def index():
 
     if request.method == "POST":
-        text = request.form.get("text")
+        line1 = request.form.get("line1")
+        line2 = request.form.get("line2")
+        text = line1
+        if line2 != "":
+            text = text + '\n' + line2
         convert(text)
-        return render_template("plot.html", forward_message=text)
 
     return render_template('index.html')
 
 def convert(text):
+    print('printing: ' + text)
+
     with open(home_dir +  'data/' + txt_file, 'w', encoding='utf-8') as f:
         f.write(text)
         f.close()
@@ -29,7 +34,7 @@ def convert(text):
 
     with open(home_dir + 'data/' + nc_file, 'a') as f:
         f.write('\nG0 X0.0 Y0.0')
-        f.close()
+        f.write('')
 
     label_printer.plot_label(home_dir + 'data/' + nc_file)
 
