@@ -19,7 +19,7 @@ class Commons:
     Y_MIN_PULSE = 1300
     Y_MAX_PULSE = 1760
 
-    PEN_MIN_PULSE = 1206
+    PEN_MIN_PULSE = 1310
     PEN_MAX_PULSE = 1700
 
     PEN_SERVO_CHANNEL = 3
